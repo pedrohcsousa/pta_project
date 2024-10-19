@@ -61,7 +61,7 @@ def pega_command(file_name):
             file_size = len(file_contents)
             return f"{SEQ_COUNTER} ARQ {file_size} {file_contents}"
         except Exception as error:
-            print(f"Error reading file: {error}")
+            print(f"Error: {error}")
             return f"{SEQ_COUNTER} NOK"
     else:
         return f"{SEQ_COUNTER} NOK"
@@ -128,7 +128,7 @@ def client_connection(client_socket, user_list):
                 client_socket.send(f"{SEQ_COUNTER} NOK".encode())
 
     except Exception as error:
-        print(f"Error handling client: {error}")
+        print(f"Error: {error}")
         client_socket.send(f"{SEQ_COUNTER} NOK".encode())
         client_socket.close()
 
@@ -137,7 +137,7 @@ def shut_down(signal_type, frame):
     """
     Handles the SIGINT signal (Ctrl+C) to shut down the server.
     """
-    print("\n Shutting down server...")
+    print("Shutting down server")
     sys.exit(0)
 
 
@@ -152,17 +152,17 @@ def run_server():
     The server runs indefinitely until interrupted by SIGINT (Ctrl+C).
     """
 
-    user_list = load_user_list()  # Load valid users from file
+    user_list = load_user_list()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST_ADDRESS, HOST_PORT))
     server_socket.listen(2)
-    print(f"Listening on {HOST_ADDRESS}:{HOST_PORT}")
+    print(f"Waiting for connection on: {HOST_ADDRESS}:{HOST_PORT}")
 
     while True:
         client_socket, client_address = server_socket.accept()
-        print(f"Stablishing connection with {client_address}")
+        print(f"Establishing connection with: {client_address}")
         client_connection(client_socket, user_list)
-        signal.signal(signal.SIGINT, shut_down)
+        signal.signal(signal.SIGINT, shut_down) # Change this later
 
 
 if __name__ == "__main__":
